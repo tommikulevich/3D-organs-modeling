@@ -67,14 +67,14 @@
             // 
             chooseObjToolStripMenuItem.Name = "chooseObjToolStripMenuItem";
             chooseObjToolStripMenuItem.Size = new Size(211, 36);
-            chooseObjToolStripMenuItem.Text = "Wybierz plik .obj";
+            chooseObjToolStripMenuItem.Text = "Select .obj file";
             chooseObjToolStripMenuItem.Click += chooseObjToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new Size(106, 36);
-            helpToolStripMenuItem.Text = "Pomóc";
+            helpToolStripMenuItem.Text = "Help";
             helpToolStripMenuItem.Click += helpToolStripMenuItem_Click;
             // 
             // FormMSN
@@ -86,7 +86,7 @@
             Controls.Add(openGLControlMain);
             MainMenuStrip = menuStrip1;
             Name = "FormMSN";
-            Text = "Projekt MSN";
+            Text = "Project MSN";
             Load += FormMain_Load;
             ((System.ComponentModel.ISupportInitialize)openGLControlMain).EndInit();
             menuStrip1.ResumeLayout(false);

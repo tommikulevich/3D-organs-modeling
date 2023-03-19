@@ -1,4 +1,4 @@
-using SharpGL;
+ï»¿using SharpGL;
 using Assimp;
 
 
@@ -17,6 +17,8 @@ namespace MSN_GUI
         // Rotating parametres
         private float rotationX, rotationY;
         private Point lastMousePosition;
+        private float cameraDist;
+        private float zoom;
 
         public FormMSN()
         {
@@ -47,8 +49,8 @@ namespace MSN_GUI
         // Help section
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string message = "Tutaj nied³ugo pojawi siê pomóc! Proszê czekaæ ...";
-            string title = "Pomóc";
+            string title = "Helpdesk";
+            string message = "To see object, you need to click 'Select .obj file' and pick a file with .obj extension";
             MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -86,6 +88,7 @@ namespace MSN_GUI
 
             openGLControl.MouseDown += openGLControlMain_MouseDown!;
             openGLControl.MouseMove += openGLControlMain_MouseMove!;
+            openGLControl.MouseWheel += OpenGLControl_MouseWheel;
         }
 
         // Graphics initialization
@@ -97,7 +100,7 @@ namespace MSN_GUI
             gl.Perspective(45.0f, (double)openGLControl.Width / (double)openGLControl.Height, 1, 1000);
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.Enable(OpenGL.GL_DEPTH_TEST);
-
+             
             // Lighting
             gl.Enable(OpenGL.GL_LIGHTING);
             gl.Enable(OpenGL.GL_LIGHT0);
@@ -117,19 +120,19 @@ namespace MSN_GUI
 
             // Camera
             float sizeFactor = Math.Max(objectSize.X, Math.Max(objectSize.Y, objectSize.Z)) * scaleFactor;
-            float cameraDist = 2.5f * sizeFactor;
+            cameraDist = 2.5f * sizeFactor + zoom;
             gl.LookAt(0, 0, cameraDist, 0, 0, 0, 0, 1, 0);
 
             // Rotation
             gl.Rotate(rotationX, 1.0f, 0.0f, 0.0f);
             gl.Rotate(rotationY, 0.0f, 1.0f, 0.0f);
-
+            
             // Scale and center the object
             gl.Scale(scaleFactor, scaleFactor, scaleFactor);
             gl.Translate(-objectCenter.X, -objectCenter.Y, -objectCenter.Z);
-
+           
             if (model != null)
-            {
+            {               
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     var mesh = model.Meshes[i];
@@ -151,7 +154,7 @@ namespace MSN_GUI
                         {
                             var vertex = mesh.Vertices[index];
                             gl.Vertex(vertex.X, vertex.Y, vertex.Z);
-
+                            
                             if (mesh.HasNormals)
                             {
                                 var normal = mesh.Normals[index];
@@ -191,8 +194,25 @@ namespace MSN_GUI
 
                 openGLControl.Invalidate();
             }
-
+            
             lastMousePosition = e.Location;
         }
+
+        // Mouse scroll
+        private void OpenGLControl_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                // Move camera to object
+                zoom -= 1.0f;
+            }
+            else
+            {
+                // Move camera from object
+                zoom += 1.0f;
+            }
+            openGLControl.Invalidate();
+        }
+
     }
 }
