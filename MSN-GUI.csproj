@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="4.1.0" />
+    <PackageReference Include="IronPython" Version="3.4.0" />
     <PackageReference Include="SharpGL.WinForms" Version="3.1.1" />
   </ItemGroup>
 

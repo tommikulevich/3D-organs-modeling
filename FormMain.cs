@@ -1,11 +1,15 @@
 ﻿using SharpGL;
 using Assimp;
+using System.Diagnostics;
 
 
 namespace MSN_GUI
 {
     public partial class FormMSN : Form
     {
+        
+
+
         // Graphics parametres
         private OpenGLControl openGLControl => openGLControlMain;
         private Scene model;
@@ -22,12 +26,35 @@ namespace MSN_GUI
 
         public FormMSN()
         {
+            
             InitializeComponent();
         }
+        // You can use Ctrl+K, Ctrl+C and Ctrl+K, Ctrl+U to Comment or Uncomment selected lines of text.
+        //private void runpythonscript(string pythonscriptpath)
+        //{
+        //    processstartinfo start = new processstartinfo();
+        //    start.filename = @"g:\\program files (x86)\\python\\python.exe";
+        //    start.arguments = pythonscriptpath;
+        //    start.useshellexecute = false;
+        //    start.redirectstandardoutput = true;
+
+        //    using (process process = process.start(start))
+        //    {
+        //        using (streamreader reader = process.standardoutput)
+        //        {
+        //            string result = reader.readtoend();
+        //            console.write(result);
+        //        }
+        //    }
+        //    console.readline();
+        //}
 
         // Choosing .obj file
         private void chooseObjToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //string pythonScriptPath = "C:\\Users\\pawel\\Downloads\\main.py";
+            //runPythonScript(pythonScriptPath);
+
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "OBJ Files (*.obj)|*.obj";
@@ -42,8 +69,12 @@ namespace MSN_GUI
                     calculateBoundingBox(model, out Vector3D min, out Vector3D max, out Vector3D size);
                     objectCenter = (max + min) / 2;
                     objectSize = size;
+
                 }
+                
             }
+
+            
         }
 
         // Help section
