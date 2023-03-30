@@ -1,6 +1,7 @@
 ﻿using SharpGL;
+using SharpGL.Shaders;
 using Assimp;
-
+using System.Numerics;
 
 namespace MSN_GUI
 {
@@ -19,6 +20,12 @@ namespace MSN_GUI
         private Point lastMousePosition;
         private float cameraDist;
         private float zoom;
+
+        // Shader
+        private ShaderProgram shaderProgram;
+
+        // VBO and VAO
+        private uint[] vertexBufferObject;
 
         public FormMSN()
         {
@@ -42,6 +49,9 @@ namespace MSN_GUI
                     calculateBoundingBox(model, out Vector3D min, out Vector3D max, out Vector3D size);
                     objectCenter = (max + min) / 2;
                     objectSize = size;
+
+                    // Generate VBO and VAO
+                   // InitializeVertexBufferObjects();
                 }
             }
         }
@@ -100,13 +110,16 @@ namespace MSN_GUI
             gl.Perspective(45.0f, (double)openGLControl.Width / (double)openGLControl.Height, 1, 1000);
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.Enable(OpenGL.GL_DEPTH_TEST);
-             
+
             // Lighting
             gl.Enable(OpenGL.GL_LIGHTING);
             gl.Enable(OpenGL.GL_LIGHT0);
             gl.Enable(OpenGL.GL_COLOR_MATERIAL);
 
             gl.ShadeModel(OpenGL.GL_SMOOTH);
+
+            // Initialize shader
+            InitializeShader(gl);
         }
 
         // Graphics drawing and refreshing
@@ -126,49 +139,54 @@ namespace MSN_GUI
             // Rotation
             gl.Rotate(rotationX, 1.0f, 0.0f, 0.0f);
             gl.Rotate(rotationY, 0.0f, 1.0f, 0.0f);
-            
+
             // Scale and center the object
             gl.Scale(scaleFactor, scaleFactor, scaleFactor);
             gl.Translate(-objectCenter.X, -objectCenter.Y, -objectCenter.Z);
-           
+
+            // Use the shader program
+            if (shaderProgram != null)
+            {
+                shaderProgram.Bind(gl);
+            }
+
+            // Render the object
             if (model != null)
-            {               
+            {
+                // Bind the VAO
+                gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, vertexBufferObject[0]);
+
+                // Iterate through all meshes in the model
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     var mesh = model.Meshes[i];
                     var material = model.Materials[mesh.MaterialIndex];
 
+                    // Set the color and other material properties if available
                     if (material != null)
                     {
                         if (material.HasColorDiffuse)
                         {
                             var color = material.ColorDiffuse;
-                            gl.Color(color.R, color.G, color.B, color.A);
-                        }
-                    }
-
-                    gl.Begin(OpenGL.GL_TRIANGLES);
-                    foreach (var face in mesh.Faces)
-                    {
-                        foreach (var index in face.Indices)
-                        {
-                            var vertex = mesh.Vertices[index];
-                            gl.Vertex(vertex.X, vertex.Y, vertex.Z);
-                            
-                            if (mesh.HasNormals)
+                            if (shaderProgram != null)
                             {
-                                var normal = mesh.Normals[index];
-                                gl.Normal(normal.X, normal.Y, normal.Z);
-                            }
-
-                            if (mesh.HasTextureCoords(0))
-                            {
-                                var texCoord = mesh.TextureCoordinateChannels[0][index];
-                                gl.TexCoord(texCoord.X, texCoord.Y);
+                                shaderProgram.SetUniform3(gl, "materialColor", color.R, color.G, color.B);
                             }
                         }
                     }
-                    gl.End();
+
+                    // Draw the mesh
+                    int vertexOffset = mesh.VertexCount * i;
+                    gl.DrawArrays(OpenGL.GL_TRIANGLES, vertexOffset, mesh.VertexCount);
+                }
+
+                // Unbind the VAO
+                gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, 0);
+
+                // Unbind the shader program
+                if (shaderProgram != null)
+                {
+                    shaderProgram.Unbind(gl);
                 }
             }
 
@@ -194,7 +212,7 @@ namespace MSN_GUI
 
                 openGLControl.Invalidate();
             }
-            
+
             lastMousePosition = e.Location;
         }
 
@@ -208,11 +226,85 @@ namespace MSN_GUI
             }
             else
             {
+
                 // Move camera from object
                 zoom += 1.0f;
             }
             openGLControl.Invalidate();
         }
 
+        private void InitializeVertexBufferObjects()
+        {
+            if (model == null) // Dodaj tę linię
+            {
+                return; // Dodaj tę linię
+            }
+
+            OpenGL gl = openGLControl.OpenGL;
+
+            vertexBufferObject = new uint[model.Meshes.Count];
+            gl.GenBuffers(model.Meshes.Count, vertexBufferObject);
+
+            for (int i = 0; i < model.Meshes.Count; i++)
+            {
+                var mesh = model.Meshes[i];
+
+                // Bind the VBO
+                gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, vertexBufferObject[i]);
+
+                // Set vertex buffer data
+                float[] vertices = new float[mesh.VertexCount * 3];
+                for (int j = 0; j < mesh.VertexCount; j++)
+                {
+                    vertices[j * 3 + 0] = mesh.Vertices[j].X;
+                    vertices[j * 3 + 1] = mesh.Vertices[j].Y;
+                    vertices[j * 3 + 2] = mesh.Vertices[j].Z;
+                }
+                gl.BufferData(OpenGL.GL_ARRAY_BUFFER, vertices, OpenGL.GL_STATIC_DRAW);
+
+                // Set vertex attribute pointers
+                uint positionAttributeLocation = (uint)shaderProgram.GetAttributeLocation(gl, "position");
+                gl.EnableVertexAttribArray(positionAttributeLocation);
+                gl.VertexAttribPointer(positionAttributeLocation, 3, OpenGL.GL_FLOAT, false, 0, IntPtr.Zero);
+
+                // Unbind the VAO and VBO
+               gl.BindBuffer(OpenGL.GL_ARRAY_BUFFER, 0);
+            }
+        }
+
+        private void InitializeShader(OpenGL gl)
+        {
+            // Shader source code
+            string vertexShaderSource = @"
+        #version 330 core
+        layout (location = 0) in vec3 position;
+
+        uniform mat4 modelViewProjectionMatrix;
+
+        void main()
+        {
+            gl_Position = modelViewProjectionMatrix * vec4(position, 1.0);
+        }";
+
+            string fragmentShaderSource = @"
+        #version 330 core
+        out vec4 fragColor;
+
+        uniform vec3 materialColor;
+
+        void main()
+        {
+            fragColor = vec4(materialColor, 1.0);
+        }";
+
+            // Compile and link shader program
+            shaderProgram = new ShaderProgram();
+            shaderProgram.Create(gl, vertexShaderSource, fragmentShaderSource, null);
+            shaderProgram.AssertValid(gl);
+        }
+
+
     }
+
+
 }
