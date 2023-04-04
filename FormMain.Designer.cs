@@ -28,26 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            openGLControlMain = new SharpGL.OpenGLControl();
             openFileDialog = new OpenFileDialog();
             menuStrip1 = new MenuStrip();
             chooseObjToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)openGLControlMain).BeginInit();
+            openGLControlMain = new SharpGL.OpenGLControl();
             menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)openGLControlMain).BeginInit();
             SuspendLayout();
-            // 
-            // openGLControlMain
-            // 
-            openGLControlMain.DrawFPS = false;
-            openGLControlMain.Location = new Point(15, 47);
-            openGLControlMain.Margin = new Padding(6, 7, 6, 7);
-            openGLControlMain.Name = "openGLControlMain";
-            openGLControlMain.OpenGLVersion = SharpGL.Version.OpenGLVersion.OpenGL2_1;
-            openGLControlMain.RenderContextType = SharpGL.RenderContextType.DIBSection;
-            openGLControlMain.RenderTrigger = SharpGL.RenderTrigger.TimerBased;
-            openGLControlMain.Size = new Size(1127, 716);
-            openGLControlMain.TabIndex = 0;
             // 
             // openFileDialog
             // 
@@ -59,48 +47,62 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { chooseObjToolStripMenuItem, helpToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1157, 40);
+            menuStrip1.Size = new Size(1340, 40);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
             // chooseObjToolStripMenuItem
             // 
             chooseObjToolStripMenuItem.Name = "chooseObjToolStripMenuItem";
-            chooseObjToolStripMenuItem.Size = new Size(211, 36);
+            chooseObjToolStripMenuItem.Size = new Size(184, 36);
             chooseObjToolStripMenuItem.Text = "Select .obj file";
             chooseObjToolStripMenuItem.Click += chooseObjToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            helpToolStripMenuItem.Size = new Size(106, 36);
+            helpToolStripMenuItem.Size = new Size(84, 36);
             helpToolStripMenuItem.Text = "Help";
             helpToolStripMenuItem.Click += helpToolStripMenuItem_Click;
+            // 
+            // openGLControlMain
+            // 
+            openGLControlMain.Dock = DockStyle.Fill;
+            openGLControlMain.DrawFPS = true;
+            openGLControlMain.FrameRate = 60;
+            openGLControlMain.Location = new Point(0, 40);
+            openGLControlMain.Margin = new Padding(6, 7, 6, 7);
+            openGLControlMain.Name = "openGLControlMain";
+            openGLControlMain.OpenGLVersion = SharpGL.Version.OpenGLVersion.OpenGL2_1;
+            openGLControlMain.RenderContextType = SharpGL.RenderContextType.FBO;
+            openGLControlMain.RenderTrigger = SharpGL.RenderTrigger.TimerBased;
+            openGLControlMain.Size = new Size(1340, 689);
+            openGLControlMain.TabIndex = 2;
             // 
             // FormMSN
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1157, 779);
-            Controls.Add(menuStrip1);
+            AutoSize = true;
+            ClientSize = new Size(1340, 729);
             Controls.Add(openGLControlMain);
+            Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "FormMSN";
             Text = "Project MSN";
             Load += FormMain_Load;
-            ((System.ComponentModel.ISupportInitialize)openGLControlMain).EndInit();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)openGLControlMain).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private SharpGL.OpenGLControl openGLControlMain;
         private OpenFileDialog openFileDialog;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem chooseObjToolStripMenuItem;
         private ToolStripMenuItem helpToolStripMenuItem;
+        private SharpGL.OpenGLControl openGLControlMain;
     }
 }
