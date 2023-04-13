@@ -1,1 +1,3 @@
-# MSN-GUI
+# 🫀 MSN Project
+
+*(currently in development)*
