@@ -1,0 +1,42 @@
+{
+  "name" : "GrayscaleErodeImageFilter",
+  "template_code_filename" : "KernelImageFilter",
+  "template_test_filename" : "ImageFilter",
+  "number_of_inputs" : 1,
+  "doc" : "Performs Erode in a grayscale image.",
+  "pixel_types" : "BasicPixelIDTypeList",
+  "members" : [],
+  "custom_methods" : [],
+  "tests" : [
+    {
+      "tag" : "GrayscaleErode",
+      "description" : "Test grayscale erode",
+      "md5hash" : "cb0f49738a99f3467b575bc95a0ace44",
+      "settings" : [
+        {
+          "parameter" : "KernelRadius",
+          "no_get_method" : 1,
+          "value" : 1
+        },
+        {
+          "parameter" : "KernelType",
+          "value" : "itk::simple::sitkBall",
+          "lua_value" : "SimpleITK.sitkBall",
+          "python_value" : "SimpleITK.sitkBall",
+          "ruby_value" : "Simpleitk::SitkBall",
+          "java_value" : "KernelEnum.sitkBall",
+          "tcl_value" : "$$sitkBall",
+          "csharp_value" : "KernelEnum.sitkBall",
+          "R_value" : "'sitkBall'"
+        }
+      ],
+      "inputs" : [
+        "Input/STAPLE1.png"
+      ]
+    }
+  ],
+  "briefdescription" : "Grayscale erosion of an image.",
+  "detaileddescription" : "Erode an image using grayscale morphology. Erosion takes the maximum of all the pixels identified by the structuring element.\n\nThe structuring element is assumed to be composed of binary values (zero or one). Only elements of the structuring element having values > 0 are candidates for affecting the center pixel.\n\n\\see MorphologyImageFilter , GrayscaleFunctionErodeImageFilter , BinaryErodeImageFilter \n\n\\par Wiki Examples:\n\n\\li All Examples \n\n\\li Erode a grayscale image",
+  "itk_module" : "ITKMathematicalMorphology",
+  "itk_group" : "MathematicalMorphology"
+}

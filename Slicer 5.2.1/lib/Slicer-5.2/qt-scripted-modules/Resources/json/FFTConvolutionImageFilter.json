@@ -1,0 +1,59 @@
+{
+  "name" : "FFTConvolutionImageFilter",
+  "template_code_filename" : "ImageFilter",
+  "template_test_filename" : "ImageFilter",
+  "number_of_inputs" : 2,
+  "doc" : "Some global documentation",
+  "pixel_types" : "BasicPixelIDTypeList",
+  "include_files" : [
+    "sitkBoundaryConditions.hxx"
+  ],
+  "custom_set_input" : "filter->SetInput( image1 ); filter->SetKernelImage( image2 );",
+  "members" : [
+    {
+      "name" : "Normalize",
+      "type" : "bool",
+      "default" : "false",
+      "doc" : "",
+      "briefdescriptionSet" : "",
+      "detaileddescriptionSet" : "Normalize the output image by the sum of the kernel components\n",
+      "briefdescriptionGet" : "",
+      "detaileddescriptionGet" : ""
+    },
+    {
+      "name" : "BoundaryCondition",
+      "enum" : [
+        "ZERO_PAD",
+        "ZERO_FLUX_NEUMANN_PAD",
+        "PERIODIC_PAD"
+      ],
+      "default" : "itk::simple::FFTConvolutionImageFilter::ZERO_FLUX_NEUMANN_PAD",
+      "custom_itk_cast" : "nsstd::auto_ptr< ImageBoundaryCondition< InputImageType > > bc( CreateNewBoundaryConditionInstance< Self, FilterType >( m_BoundaryCondition ) ); filter->SetBoundaryCondition( bc.get() );\n"
+    },
+    {
+      "name" : "OutputRegionMode",
+      "enum" : [
+        "SAME",
+        "VALID"
+      ],
+      "default" : "itk::simple::FFTConvolutionImageFilter::SAME",
+      "itk_type" : "typename FilterType::OutputRegionModeType"
+    }
+  ],
+  "tests" : [
+    {
+      "tag" : "defaults",
+      "description" : "Basic convolution with gaussian",
+      "settings" : [],
+      "tolerance" : "0.0001",
+      "inputs" : [
+        "Input/cthead1-Float.mha",
+        "Input/Gaussian_1.5.nrrd"
+      ]
+    }
+  ],
+  "briefdescription" : "Convolve a given image with an arbitrary image kernel using multiplication in the Fourier domain.",
+  "detaileddescription" : "This filter produces output equivalent to the output of the ConvolutionImageFilter . However, it takes advantage of the convolution theorem to accelerate the convolution computation when the kernel is large.\n\n\\warning This filter ignores the spacing, origin, and orientation of the kernel image and treats them as identical to those in the input image.\n\nThis code was adapted from the Insight Journal contribution:\n\n\"FFT Based Convolution\" by Gaetan Lehmann https://hdl.handle.net/10380/3154 \n\n\\see ConvolutionImageFilter",
+  "itk_module" : "ITKConvolution",
+  "itk_group" : "Convolution"
+}

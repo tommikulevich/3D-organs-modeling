@@ -1,0 +1,2 @@
+[console_scripts]
+dicomweb_client = dicomweb_client.cli:_main

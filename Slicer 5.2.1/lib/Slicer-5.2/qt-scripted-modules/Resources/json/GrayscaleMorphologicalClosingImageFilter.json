@@ -1,0 +1,53 @@
+{
+  "name" : "GrayscaleMorphologicalClosingImageFilter",
+  "template_code_filename" : "KernelImageFilter",
+  "template_test_filename" : "ImageFilter",
+  "number_of_inputs" : 1,
+  "doc" : "Performs morphological closing in a grayscale image.",
+  "pixel_types" : "BasicPixelIDTypeList",
+  "members" : [
+    {
+      "name" : "SafeBorder",
+      "type" : "bool",
+      "default" : "true",
+      "doc" : "",
+      "briefdescriptionSet" : "",
+      "detaileddescriptionSet" : "A safe border is added to input image to avoid borders effects and remove it once the closing is done",
+      "briefdescriptionGet" : "",
+      "detaileddescriptionGet" : "A safe border is added to input image to avoid borders effects and remove it once the closing is done"
+    }
+  ],
+  "custom_methods" : [],
+  "tests" : [
+    {
+      "tag" : "GrayscaleMorphologicalClosing",
+      "description" : "Test grayscale morphological closing",
+      "md5hash" : "103130cc4caf40d9fb252fbabc531e15",
+      "settings" : [
+        {
+          "parameter" : "KernelRadius",
+          "no_get_method" : 1,
+          "value" : 1
+        },
+        {
+          "parameter" : "KernelType",
+          "value" : "itk::simple::sitkBall",
+          "lua_value" : "SimpleITK.sitkBall",
+          "python_value" : "SimpleITK.sitkBall",
+          "ruby_value" : "Simpleitk::SitkBall",
+          "java_value" : "KernelEnum.sitkBall",
+          "tcl_value" : "$$sitkBall",
+          "csharp_value" : "KernelEnum.sitkBall",
+          "R_value" : "'sitkBall'"
+        }
+      ],
+      "inputs" : [
+        "Input/STAPLE1.png"
+      ]
+    }
+  ],
+  "briefdescription" : "gray scale dilation of an image",
+  "detaileddescription" : "Erode an image using grayscale morphology. Dilation takes the maximum of all the pixels identified by the structuring element.\n\nThe structuring element is assumed to be composed of binary values (zero or one). Only elements of the structuring element having values > 0 are candidates for affecting the center pixel.\n\n\\see MorphologyImageFilter , GrayscaleFunctionErodeImageFilter , BinaryErodeImageFilter",
+  "itk_module" : "ITKMathematicalMorphology",
+  "itk_group" : "MathematicalMorphology"
+}

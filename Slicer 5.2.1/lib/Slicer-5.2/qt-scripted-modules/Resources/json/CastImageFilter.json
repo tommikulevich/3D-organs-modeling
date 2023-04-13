@@ -1,0 +1,18 @@
+{
+  "name" : "CastImageFilter",
+  "template_code_filename" : "ImageFilter",
+  "number_of_inputs" : 1,
+  "doc" : "",
+  "pixel_types" : "not used",
+  "output_pixel_type" : "not used",
+  "members" : [
+    {
+      "name" : "OutputPixelType",
+      "type" : "PixelIDValueEnum",
+      "default" : "not used",
+      "briefdescriptionSet" : "Output pixel type to convert image to."
+    }
+  ],
+  "briefdescription" : "Casts input image's pixels to output pixel type.\n",
+  "detaileddescription" : "This filter converts images between many pixel types. The pixels are converted with a static_cast and results of overflow my give system dependent results."
+}
