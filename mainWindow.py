@@ -1,21 +1,33 @@
 import os
 import json
+import multiprocessing
+from concurrent.futures import ProcessPoolExecutor
 
-from PyQt5 import uic
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QAction, QStyle, QFileDialog, QLineEdit, QLabel, QProgressBar
-from PyQt5.QtWidgets import QPushButton, QMainWindow, QMessageBox
+from PySide2.QtCore import QFile, Signal
+from PySide2.QtGui import QIcon
+from PySide2.QtUiTools import QUiLoader
+from PySide2.QtWidgets import QApplication, QAction, QStyle, QFileDialog, QLineEdit, QLabel, QProgressBar
+from PySide2.QtWidgets import QPushButton, QMainWindow, QMessageBox
 
 import open3d as o3d
 from open3d.visualization import gui
 
+from mainAlgorithm import MainAlgorithm
 from organDialog import OrganDialog
 
 
 class MainWindow(QMainWindow):
+    isReady = Signal()
+
     def __init__(self):
         super().__init__()
-        uic.loadUi('ui/main_window_qt.ui', self)
+        uiFile = QFile('ui/main_window_qt.ui')
+        uiFile.open(QFile.ReadOnly)
+        ui = QUiLoader().load(uiFile, None)  # Loading ui from .ui file
+        uiFile.close()
+
+        self.setCentralWidget(ui)
+        self.setWindowTitle("MSN Project")
         self.setWindowIcon(QIcon(QApplication.instance().style().standardPixmap(QStyle.SP_FileDialogListView)))
 
         # Finding and configuring window elements
@@ -44,6 +56,9 @@ class MainWindow(QMainWindow):
         self.status_label = self.findChild(QLabel, 'statusLabel')
         self.status_bar = self.findChild(QProgressBar, 'statusBar')
         self.status_bar.setVisible(False)
+
+        self.algorithm = MainAlgorithm()  # Create algorithm object
+        self.isReady.connect(self.readyProcedure)
 
         # Other initial operations
         self.save_config()
@@ -120,15 +135,23 @@ class MainWindow(QMainWindow):
         return input_path, output_path
 
     def start_algorithm(self):
-        # TO-DO: add starting script with the algorithm
+        executor = ProcessPoolExecutor(max_workers=multiprocessing.cpu_count())
+        future = executor.submit(self.algorithm.startAlgorithm, self.get_input_dir(), self.get_output_dir())
+        future.add_done_callback(self.endAlgorithm)
 
-        # Experimental
+        # Experimental (need to change)
+        self.status_label.setText("Info: Algorithm started...")
         if self.status_bar.isVisible():
             self.status_bar.setVisible(False)
         else:
             self.status_bar.setVisible(True)
 
-        self.status_label.setText("Info: Algorithm started...")
+    def endAlgorithm(self, future):
+        self.isReady.emit()
+
+    def readyProcedure(self):
+        # Need to off status_bar and print something in status_label
+        print("Algorithm ended...")
 
     @staticmethod
     def show_result(folder_path):

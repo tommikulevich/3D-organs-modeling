@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
-from PyQt5 import QtCore
+from PySide2.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+from PySide2 import QtCore
 
 
 class OrganDialog(QDialog):
