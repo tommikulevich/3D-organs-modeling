@@ -1,39 +1,41 @@
 import os
 import threading
-import sys
-import fileinput
+
+
 class MainAlgorithm:
     def __init__(self):
-        pass
+        self.input_path = None
+        self.output_path = None
 
     def startAlgorithm(self, input_path, output_path):
-        print(f"Test starting algorithm. Example input: '{input_path}'. Example output: '{output_path}'")
+        self.input_path = input_path
+        self.output_path = output_path
+
         thread_serv = threading.Thread(target=self.startServer)
-        thread_slicer = threading.Thread(target=self.startSlicer, args=(input_path, output_path,))
+        thread_slicer = threading.Thread(target=self.startSlicer)
         thread_slicer.start()
         thread_serv.start()
 
-    def startServer(self):
+    @staticmethod
+    def startServer():
+        os.system(f'cd Slicer 5.2.1 & '
+                  f'cd bin & '
+                  f'monailabel start_server --app apps/radiology --studies myData1 --conf models deepedit"')
 
-        #os.system('cd Slicer 5.2.1 & cd bin & PythonSlicer.exe -m monailabel start_server --app apps/radiology --studies myData1 --conf models deepedit"')
-        os.system('cd Slicer 5.2.1 & cd bin & monailabel start_server --app apps/radiology --studies myData1 --conf models deepedit"')
-        # os.system('dir')
-        # os.system('cd bin')
-        #
-        # os.system('PythonSlicer.exe -m monailabel start_server --app apps/radiology --studies myData1 --conf models deepedit"')
-
-    def startSlicer(self, input_path, output_path):
+    def startSlicer(self):
         path = os.getcwd()
-        fileToSearch = 'commands.py'
-        with open(fileToSearch, 'r') as file:
-            filedata = file.read().split('\n')
+        file_to_search = 'commands.py'
 
-        filedata[0] = f'dicomDataDir= "{input_path}"'
-        filedata[1] = f'outputFolder= "{output_path}"'
-        filedata = '\n'.join(filedata)
+        with open(file_to_search, 'r') as file:
+            file_data = file.read().split('\n')
 
-        with open(fileToSearch, 'w') as file:
-            file.write(filedata)
+        file_data[0] = f'dicomDataDir= "{self.input_path}"'
+        file_data[1] = f'outputFolder= "{self.output_path}"'
+        file_data = '\n'.join(file_data)
+
+        with open(file_to_search, 'w') as file:
+            file.write(file_data)
+
         absolute_path = os.path.join(path, "commands.py")
-        os.system(f'cd Slicer 5.2.1 & Slicer.exe --python-script {absolute_path}')
-        #os.system('Slicer.exe --python-script "commands.py"')
+        os.system(f'cd Slicer 5.2.1 & '
+                  f'Slicer.exe --python-script "{absolute_path}"')

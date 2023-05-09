@@ -1,7 +1,7 @@
 import os
 import json
-import multiprocessing
-from concurrent.futures import ProcessPoolExecutor
+import threading
+import time
 
 from PySide2.QtCore import QFile, Signal
 from PySide2.QtGui import QIcon
@@ -58,9 +58,11 @@ class MainWindow(QMainWindow):
         self.status_bar.setVisible(False)
 
         self.algorithm = MainAlgorithm()  # Create algorithm object
-        self.isReady.connect(self.readyProcedure)
+        self.thread_status = None
+        self.isReady.connect(self.ready_procedure)
 
         # Other initial operations
+        self.config_path = None
         self.save_config()
 
     @staticmethod
@@ -101,18 +103,20 @@ class MainWindow(QMainWindow):
         return self.output_line_edit.text()
 
     def save_config(self):
-        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config/config.json").replace('\\', '/')
+        self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config/config.json").replace('\\', '/')
 
         # Update config
         config = {
             "paths": {
                 "input": self.get_input_dir(),
                 "output": self.get_output_dir()
-            }
+            },
+
+            "status": "-"
         }
 
         # Write config to file
-        with open(config_path, "w") as file:
+        with open(self.config_path, "w") as file:
             json.dump(config, file, indent=4)
 
     def get_config(self):
@@ -135,23 +139,30 @@ class MainWindow(QMainWindow):
         return input_path, output_path
 
     def start_algorithm(self):
-        executor = ProcessPoolExecutor(max_workers=multiprocessing.cpu_count())
-        future = executor.submit(self.algorithm.startAlgorithm, self.get_input_dir(), self.get_output_dir())
-        future.add_done_callback(self.endAlgorithm)
+        self.algorithm.startAlgorithm(self.get_input_dir(), self.get_output_dir())
+        self.thread_status = threading.Thread(target=self.check_status)
+        self.thread_status.start()
 
-        # Experimental (need to change)
         self.status_label.setText("Info: Algorithm started...")
-        if self.status_bar.isVisible():
-            self.status_bar.setVisible(False)
-        else:
-            self.status_bar.setVisible(True)
+        self.status_bar.setVisible(True)
 
-    def endAlgorithm(self, future):
-        self.isReady.emit()
+    def check_status(self):
+        while True:
+            status = self.load_status()
+            if status == "ready":
+                self.isReady.emit()
+                self.save_config()
+                break
+            time.sleep(1)
 
-    def readyProcedure(self):
-        # Need to off status_bar and print something in status_label
-        print("Algorithm ended...")
+    def load_status(self):
+        with open(self.config_path, 'r') as f:
+            config = json.load(f)
+        return config.get("status", {})
+
+    def ready_procedure(self):
+        self.status_label.setText("Info: Algorithm ended!")
+        self.status_bar.setVisible(False)
 
     @staticmethod
     def show_result(folder_path):

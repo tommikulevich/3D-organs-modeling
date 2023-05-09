@@ -1,10 +1,12 @@
-dicomDataDir= "C:/Users/Misio/PycharmProjects/Slicer_Testy_skladanka/Hip Large (1024x1024x834)"
-outputFolder= "C:/Users/Misio/PycharmProjects/Slicer_Testy_skladanka/OUTPUT_TEST"
+dicomDataDir= "Q:/PG/Coding/Projekt Grupowy/MSN/demo/input"
+outputFolder= "Q:/PG/Coding/Projekt Grupowy/MSN/demo/output"
 
 loadedNodeIDs = []
 from DICOMLib import DICOMUtils
 import tempfile
 import time
+import json
+import os
 
 slicer.app.testingEnabled() == True
 slicer.util.selectModule("DICOM")
@@ -61,3 +63,14 @@ slicer.modules.segmentations.logic().ExportSegmentsClosedSurfaceRepresentationTo
                                                                                       None, "STL", True, 1.0, False)
 slicer.modules.segmentations.logic().ExportSegmentsClosedSurfaceRepresentationToFiles(outputFolder, segmentationNode,
                                                                                       None, "OBJ", True, 1.0, False)
+
+# Update status
+config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config/config.json").replace('\\', '/')
+with open(config_path, 'r') as f:
+    config = json.load(f)
+
+config['status'] = "ready"
+
+# zapisz zmieniony plik JSON
+with open(config_path, 'w') as f:
+    json.dump(config, f, indent=4)
