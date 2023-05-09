@@ -1,5 +1,5 @@
-dicomDataDir= "C:/Users/Misio/Documents/GitHub/3D-organs-modeling/demo/input"
-outputFolder= "C:/Users/Misio/Documents/GitHub/3D-organs-modeling/demo/output"
+dicomDataDir= "C:/Users/Misio/PycharmProjects/Slicer_Testy_skladanka/Hip Large (1024x1024x834)"
+outputFolder= "C:/Users/Misio/PycharmProjects/Slicer_Testy_skladanka/OUTPUT_TEST"
 
 loadedNodeIDs = []
 from DICOMLib import DICOMUtils
