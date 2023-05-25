@@ -156,19 +156,19 @@ class MainWindow(QMainWindow):
                 self.isReady.emit()
                 break
             elif status == "load_data":
-                self.status_label.setText("Status: Loading data ...")
+                self.status_label.setText("Status: (1/7) Loading data ...")
             elif status == "load_patients":
-                self.status_label.setText("Status: Loading patients ...")
+                self.status_label.setText("Status: (2/7) Loading patients ...")
             elif status == "monai_init":
-                self.status_label.setText("Status: [MONAILabel] Initializing ...")
+                self.status_label.setText("Status: (3/7) [MONAILabel] Initializing ...")
             elif status == "monai_load_data":
-                self.status_label.setText("Status: [MONAILabel] Loading data ...")
+                self.status_label.setText("Status: (4/7) [MONAILabel] Loading data ...")
             elif status == "monai_autosegmentation":
-                self.status_label.setText("Status: [MONAILabel] Autosegmentation started ...")
+                self.status_label.setText("Status: (5/7) [MONAILabel] Autosegmentation started ...")
             elif status == "monai_3d":
-                self.status_label.setText("Status: [MONAILabel] Creating a 3D representation ...")
+                self.status_label.setText("Status: (6/7) [MONAILabel] Creating a 3D representation ...")
             elif status == "write_data":
-                self.status_label.setText("Status: Saving files ...")
+                self.status_label.setText("Status: (7/7) Saving files ...")
             time.sleep(1)
 
     def load_status(self):
