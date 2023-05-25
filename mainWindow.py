@@ -139,20 +139,36 @@ class MainWindow(QMainWindow):
         return input_path, output_path
 
     def start_algorithm(self):
+        self.save_config()
+
         self.algorithm.startAlgorithm(self.get_input_dir(), self.get_output_dir())
         self.thread_status = threading.Thread(target=self.check_status)
         self.thread_status.start()
 
         self.status_label.setText("Info: Algorithm started...")
         self.status_bar.setVisible(True)
+        self.set_buttons_enable(False)
 
     def check_status(self):
         while True:
             status = self.load_status()
             if status == "ready":
                 self.isReady.emit()
-                self.save_config()
                 break
+            elif status == "load_data":
+                self.status_label.setText("Status: Loading data ...")
+            elif status == "load_patients":
+                self.status_label.setText("Status: Loading patients ...")
+            elif status == "monai_init":
+                self.status_label.setText("Status: [MONAILabel] Initializing ...")
+            elif status == "monai_load_data":
+                self.status_label.setText("Status: [MONAILabel] Loading data ...")
+            elif status == "monai_autosegmentation":
+                self.status_label.setText("Status: [MONAILabel] Autosegmentation started ...")
+            elif status == "monai_3d":
+                self.status_label.setText("Status: [MONAILabel] Creating a 3D representation ...")
+            elif status == "write_data":
+                self.status_label.setText("Status: Saving files ...")
             time.sleep(1)
 
     def load_status(self):
@@ -163,6 +179,14 @@ class MainWindow(QMainWindow):
     def ready_procedure(self):
         self.status_label.setText("Info: Algorithm ended!")
         self.status_bar.setVisible(False)
+        self.set_buttons_enable(True)
+        self.save_config()
+
+    def set_buttons_enable(self, isEnable):
+        self.change_input_button.setEnabled(isEnable)
+        self.change_output_button.setEnabled(isEnable)
+        self.start_button.setEnabled(isEnable)
+        self.show_button.setEnabled(isEnable)
 
     @staticmethod
     def show_result(folder_path):
