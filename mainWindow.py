@@ -43,10 +43,12 @@ class MainWindow(QMainWindow):
         self.change_output_button.clicked.connect(self.change_output_dir)
 
         self.input_line_edit = self.findChild(QLineEdit, 'inputLineEdit')
-        self.input_line_edit.setText(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'demo/input').replace('\\', '/'))
+        self.input_init = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'demo/input').replace('\\', '/')
+        self.input_line_edit.setText(self.input_init)
         self.input_line_edit.setCursorPosition(0)
         self.output_line_edit = self.findChild(QLineEdit, 'outputLineEdit')
-        self.output_line_edit.setText(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'demo/output').replace('\\', '/'))
+        self.output_init = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'demo/output').replace('\\', '/')
+        self.output_line_edit.setText(self.output_init)
         self.output_line_edit.setCursorPosition(0)
 
         self.start_button = self.findChild(QPushButton, 'startButton')
@@ -170,15 +172,18 @@ class MainWindow(QMainWindow):
         return input_path, output_path
 
     def start_algorithm(self):
-        self.save_config()
+        if self.get_input_dir() != self.input_init and self.get_output_dir() != self.output_init:
+            self.save_config()
 
-        self.algorithm.startAlgorithm(self.get_input_dir(), self.get_output_dir())
-        self.thread_status = threading.Thread(target=self.check_status)
-        self.thread_status.start()
+            self.algorithm.startAlgorithm(self.get_input_dir(), self.get_output_dir())
+            self.thread_status = threading.Thread(target=self.check_status)
+            self.thread_status.start()
 
-        self.status_label.setText("Info: Algorithm started...")
-        self.status_bar.setVisible(True)
-        self.set_buttons_enable(False)
+            self.status_label.setText("Info: Algorithm started...")
+            self.status_bar.setVisible(True)
+            self.set_buttons_enable(False)
+        else:
+            self.status_label.setText("Info: Input or output file is not selected!")
 
     def check_status(self):
         while True:
