@@ -3,6 +3,7 @@ import json
 import threading
 import time
 
+from PyQt5.QtCore import QDir
 from PySide2.QtCore import QFile, Signal
 from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
@@ -78,23 +79,53 @@ class MainWindow(QMainWindow):
         folder_path = QFileDialog.getExistingDirectory(self, "Choose input folder")
 
         # TO-DO: add folder validation
-
-        if folder_path:
-            self.save_config()
-            self.input_line_edit.setText(folder_path)
+        if os.listdir(folder_path):
+            file_format = "dcm"  # Replace with your desired file format
+            contains_subdirs = self.containsSubdirs(folder_path)
+            contains_wrong_format = self.containsWrongFormat(folder_path, file_format)
+            if not contains_subdirs and not contains_wrong_format:
+                self.save_config()
+                self.input_line_edit.setText(folder_path)
+                self.input_line_edit.setCursorPosition(0)
+                self.status_label.setText("Info: Input folder successfully changed!")
+            else:
+                self.input_line_edit.setCursorPosition(0)
+                self.status_label.setText("Info: Input folder contains wrong format!")
+        else:
             self.input_line_edit.setCursorPosition(0)
-            self.status_label.setText("Info: Input folder successfully changed!")
+            self.status_label.setText("Info: Input folder is empty!")
+
 
     def change_output_dir(self):
         folder_path = QFileDialog.getExistingDirectory(self, "Choose output folder")
 
-        # TO-DO: add folder validation
-
-        if folder_path:
+        if not os.listdir(folder_path):
             self.save_config()
             self.output_line_edit.setText(folder_path)
             self.output_line_edit.setCursorPosition(0)
             self.status_label.setText("Info: Output folder successfully changed!")
+        else:
+            self.output_line_edit.setCursorPosition(0)
+            self.status_label.setText("Info: Output folder is not empty!")
+
+    def containsSubdirs(self, dir_path):
+        dir = QDir(dir_path)
+        for entry in dir.entryInfoList():
+            if entry.isDir() and entry.fileName() not in [".", ".."]:
+                return True
+        return False
+
+    def containsWrongFormat(self, dir_path, file_format):
+        dir = QDir(dir_path)
+        for entry in dir.entryInfoList():
+            if entry.isDir() and entry.fileName() not in [".", ".."]:
+                # Recursively check subdirectories
+                sub_dir_path = entry.absoluteFilePath()
+                if self.containsWrongFormat(sub_dir_path, file_format):
+                    return True
+            elif entry.isFile() and entry.suffix() != file_format:
+                return True
+        return False
 
     def get_input_dir(self):
         return self.input_line_edit.text()
