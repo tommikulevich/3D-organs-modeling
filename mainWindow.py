@@ -2,6 +2,7 @@ import os
 import json
 import threading
 import time
+import glob
 
 from PyQt5.QtCore import QDir
 from PySide2.QtCore import QFile, Signal
@@ -12,7 +13,6 @@ from PySide2.QtWidgets import QPushButton, QMainWindow, QMessageBox
 
 import open3d as o3d
 from open3d.visualization import gui
-
 from mainAlgorithm import MainAlgorithm
 from organDialog import OrganDialog
 
@@ -68,12 +68,18 @@ class MainWindow(QMainWindow):
         self.config_path = None
         self.save_config()
 
+        self.window_open = False
+
+
     @staticmethod
     def project_info():
         msg = QMessageBox()
         msg.setWindowIcon(QIcon(QApplication.instance().style().standardPixmap(QStyle.SP_FileDialogInfoView)))
         msg.setIcon(QMessageBox.Information)
-        msg.setText(f"Here you will find a short tutorial how to use this program...")
+        msg.setText(f"Tutorial:\n- Press 'Select' to change directory of input/output data\n"
+                    f"- Press 'Start algorithm' to start segmentation of input data\n"
+                    f"- In 'Show 3D results' you will find a window with a selection of organs to show\n"
+                    f"- Info bar shows status of algorithm")
         msg.setWindowTitle("Project Info | Help")
         msg.exec_()
 
@@ -224,32 +230,45 @@ class MainWindow(QMainWindow):
         self.start_button.setEnabled(isEnable)
         self.show_button.setEnabled(isEnable)
 
-    @staticmethod
-    def show_result(folder_path):
-        geometries = []
+    def show_result(self, folder_path, ending):
+        if self.window_open:
+            print("none")
+            return
 
-        for filename in os.listdir(folder_path):
-            if filename.lower().endswith(".obj"):   # For showing all .obj in the folder
-                file_path = os.path.join(folder_path, filename)
+        if len(os.listdir(folder_path)) != 0:
+            geometries = []
+            for i in range(len(ending)):
+                for filename in os.listdir(folder_path):
+                    if filename.lower().endswith(ending[i]):   # For showing all .obj in the folder
+                        file_path = os.path.join(folder_path, filename)
+                        mesh = o3d.io.read_triangle_mesh(file_path)
+                        mesh.compute_vertex_normals()
+                        geometries.append(mesh)
+        else:
+            geometries = []
+            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'demo/output').replace('\\', '/')
+            for i in range(len(ending)):
+                for filename in os.listdir(path):
+                    if filename.lower().endswith(ending[i]):  # For showing all .obj in the folder
+                        file_path = os.path.join(path, filename)
+                        mesh = o3d.io.read_triangle_mesh(file_path)
+                        mesh.compute_vertex_normals()
+                        geometries.append(mesh)
 
-                mesh = o3d.io.read_triangle_mesh(file_path)
-                mesh.compute_vertex_normals()
-                geometries.append(mesh)
-
-        # TO-DO: fix errors when multiple windows are shown and user tries to close one of it
-        # TO-DO (optional): create separate window using 'o3d.visualization.gui.Application' and
-        #                   'o3d.visualization.gui.Window' classes (for visualization configuration)
+        self.window_open = True
         o3d.visualization.draw_geometries(geometries)
-
+        self.window_open = False
     def choose_window(self):
         organDialog = OrganDialog()
 
         if organDialog.exec_():
             selected = organDialog.get_selected()
 
-            # TO-DO: add another options
-            if selected == "all":
-                results = self.get_output_dir()
-                self.show_result(results)
-            else:
+            if len(selected) == 0:
                 pass
+            elif selected[0] == "all":
+                results = self.get_output_dir()
+                self.show_result(results, ".obj")
+            else:
+                results = self.get_output_dir()
+                self.show_result(results, selected)
