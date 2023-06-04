@@ -1,5 +1,5 @@
-dicomDataDir= "C:/Users/Misio/PycharmProjects/MONAIv2/20190514_HipLarge_Angio CT/Hip Large (1024x1024x834)"
-outputFolder= "D:/stl_testy_slicer/Nowy folder (3)"
+dicomDataDir= "Q:/PG/Coding/Projekt Grupowy/MSN/demo/input"
+outputFolder= "Q:/PG/Coding/Projekt Grupowy/MSN/demo/output"
 
 loadedNodeIDs = []
 from DICOMLib import DICOMUtils
@@ -124,7 +124,11 @@ slicer.modules.MONAILabelWidget._segmentNode.CreateClosedSurfaceRepresentation()
 slicer.app.layoutManager().threeDWidget(0).threeDView().resetFocalPoint()
 
 # ----- Filtering segmentations -----
+config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config/config.json").replace('\\', '/')
+with open(config_path, 'r') as f:
+    config = json.load(f)
 
+kernel = int(config['filter'])
 segments = ["aorta", "inferior vena cava", "left kidney", "liver", "right kidney", "spleen", "stomach"]
 segmentationNode = slicer.mrmlScene.GetFirstNodeByClass("vtkMRMLSegmentationNode")
 
@@ -139,7 +143,7 @@ for segmentId in segments:
     median_filter = vtk.vtkImageMedian3D()
 
     median_filter.SetInputData(segmentImageData)
-    median_filter.SetKernelSize(9, 9, 9)
+    median_filter.SetKernelSize(kernel, kernel, kernel)
 
     median_filter.Update()
     segmentImageData.DeepCopy(median_filter.GetOutput())
@@ -153,8 +157,6 @@ for segmentId in segments:
 
     segmentationNode.CreateClosedSurfaceRepresentation()
     slicer.app.applicationLogic().PropagateVolumeSelection()
-
-
 
 # ----------------------------------------------------
 

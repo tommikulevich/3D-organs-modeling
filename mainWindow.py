@@ -2,13 +2,13 @@ import os
 import json
 import threading
 import time
-import glob
 
-from PyQt5.QtCore import QDir
+from PySide2.QtCore import QDir
 from PySide2.QtCore import QFile, Signal
 from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QAction, QStyle, QFileDialog, QLineEdit, QLabel, QProgressBar
+from PySide2.QtWidgets import QApplication, QAction, QStyle, QFileDialog, QLineEdit, QLabel, QProgressBar, QRadioButton, \
+    QButtonGroup
 from PySide2.QtWidgets import QPushButton, QMainWindow, QMessageBox
 
 import open3d as o3d
@@ -51,6 +51,15 @@ class MainWindow(QMainWindow):
         self.output_line_edit.setText(self.output_init)
         self.output_line_edit.setCursorPosition(0)
 
+        coarse_radioButton = self.findChild(QRadioButton, 'coarseRadioButton')
+        medium_radioButton = self.findChild(QRadioButton, 'mediumRadioButton')
+        smooth_radioButton = self.findChild(QRadioButton, 'smoothRadioButton')
+
+        self.filter_group = QButtonGroup()
+        self.filter_group.addButton(coarse_radioButton, 1)
+        self.filter_group.addButton(medium_radioButton, 2)
+        self.filter_group.addButton(smooth_radioButton, 3)
+
         self.start_button = self.findChild(QPushButton, 'startButton')
         self.start_button.clicked.connect(self.start_algorithm)
         self.show_button = self.findChild(QPushButton, 'showButton')
@@ -86,7 +95,7 @@ class MainWindow(QMainWindow):
     def change_input_dir(self):
         folder_path = QFileDialog.getExistingDirectory(self, "Choose input folder")
 
-        # TO-DO: add folder validation
+        # Folder validation
         if os.listdir(folder_path):
             file_format = "dcm"  # Replace with your desired file format
             contains_subdirs = self.containsSubdirs(folder_path)
@@ -103,7 +112,6 @@ class MainWindow(QMainWindow):
             self.input_line_edit.setCursorPosition(0)
             self.status_label.setText("Info: Input folder is empty!")
 
-
     def change_output_dir(self):
         folder_path = QFileDialog.getExistingDirectory(self, "Choose output folder")
 
@@ -116,11 +124,13 @@ class MainWindow(QMainWindow):
             self.output_line_edit.setCursorPosition(0)
             self.status_label.setText("Info: Output folder is not empty!")
 
-    def containsSubdirs(self, dir_path):
+    @staticmethod
+    def containsSubdirs(dir_path):
         dir = QDir(dir_path)
         for entry in dir.entryInfoList():
             if entry.isDir() and entry.fileName() not in [".", ".."]:
                 return True
+
         return False
 
     def containsWrongFormat(self, dir_path, file_format):
@@ -141,6 +151,9 @@ class MainWindow(QMainWindow):
     def get_output_dir(self):
         return self.output_line_edit.text()
 
+    def get_filter_settings(self):
+        return self.filter_group.checkedButton().text()
+
     def save_config(self):
         self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config/config.json").replace('\\', '/')
 
@@ -150,7 +163,7 @@ class MainWindow(QMainWindow):
                 "input": self.get_input_dir(),
                 "output": self.get_output_dir()
             },
-
+            "filter": "Medium",
             "status": "-"
         }
 
@@ -175,13 +188,16 @@ class MainWindow(QMainWindow):
         input_path = paths.get("input", {})
         output_path = paths.get("output", {})
 
-        return input_path, output_path
+        # Get filter setting
+        filter_setting = paths.get("filter", "Medium")
+
+        return input_path, output_path, filter_setting
 
     def start_algorithm(self):
         if self.get_input_dir() != self.input_init and self.get_output_dir() != self.output_init:
             self.save_config()
 
-            self.algorithm.startAlgorithm(self.get_input_dir(), self.get_output_dir())
+            self.algorithm.startAlgorithm(self.get_input_dir(), self.get_output_dir(), self.get_filter_settings())
             self.thread_status = threading.Thread(target=self.check_status)
             self.thread_status.start()
 
@@ -229,10 +245,11 @@ class MainWindow(QMainWindow):
         self.change_output_button.setEnabled(isEnable)
         self.start_button.setEnabled(isEnable)
         self.show_button.setEnabled(isEnable)
+        [filter_button.setEnabled(isEnable) for filter_button in self.filter_group.buttons()]
 
     def show_result(self, folder_path, ending):
         if self.window_open:
-            print("none")
+            print("None")
             return
 
         if len(os.listdir(folder_path)) != 0:
@@ -258,6 +275,7 @@ class MainWindow(QMainWindow):
         self.window_open = True
         o3d.visualization.draw_geometries(geometries)
         self.window_open = False
+
     def choose_window(self):
         organDialog = OrganDialog()
 

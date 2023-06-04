@@ -6,15 +6,25 @@ class MainAlgorithm:
     def __init__(self):
         self.input_path = None
         self.output_path = None
+        self.filter = None
 
-    def startAlgorithm(self, input_path, output_path):
+    def startAlgorithm(self, input_path, output_path, filter_setting):
         self.input_path = input_path
         self.output_path = output_path
+        self.setFilter(filter_setting)
 
         thread_serv = threading.Thread(target=self.startServer)
         thread_slicer = threading.Thread(target=self.startSlicer)
         thread_slicer.start()
         thread_serv.start()
+
+    def setFilter(self, filter_setting):
+        if filter_setting == "Coarse (fast)":
+            self.filter = 7
+        elif filter_setting == "Smooth (slow)":
+            self.filter = 11
+        else:
+            self.filter = 9
 
     @staticmethod
     def startServer():
