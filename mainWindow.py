@@ -155,7 +155,7 @@ class MainWindow(QMainWindow):
         if filter_setting == "Coarse (fast)":
             return 7
         elif filter_setting == "Smooth (slow)":
-            return 11
+            return 15
         else:
             return 9
 
