@@ -1,5 +1,5 @@
-dicomDataDir= "Q:/PG/Coding/Projekt Grupowy/MSN/demo/input"
-outputFolder= "Q:/PG/Coding/Projekt Grupowy/MSN/demo/output"
+dicomDataDir= "C:/Users/Misio/PycharmProjects/MONAIv2/20190514_HipLarge_Angio CT/Hip Large (1024x1024x834)"
+outputFolder= "D:/stl_testy_slicer/Nowy folder (3)"
 
 loadedNodeIDs = []
 from DICOMLib import DICOMUtils
@@ -122,6 +122,41 @@ with open(config_path, 'w') as f:
 
 slicer.modules.MONAILabelWidget._segmentNode.CreateClosedSurfaceRepresentation()
 slicer.app.layoutManager().threeDWidget(0).threeDView().resetFocalPoint()
+
+# ----- Filtering segmentations -----
+
+segments = ["aorta", "inferior vena cava", "left kidney", "liver", "right kidney", "spleen", "stomach"]
+segmentationNode = slicer.mrmlScene.GetFirstNodeByClass("vtkMRMLSegmentationNode")
+
+for segmentId in segments:
+    segmentIds = vtk.vtkStringArray()
+    segmentIds.InsertNextValue(segmentId)
+    labelmapVolumeNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode")
+    slicer.modules.segmentations.logic().ExportSegmentsToLabelmapNode(segmentationNode, segmentIds, labelmapVolumeNode)
+
+    segmentImageData = labelmapVolumeNode.GetImageData()
+
+    median_filter = vtk.vtkImageMedian3D()
+
+    median_filter.SetInputData(segmentImageData)
+    median_filter.SetKernelSize(9, 9, 9)
+
+    median_filter.Update()
+    segmentImageData.DeepCopy(median_filter.GetOutput())
+    median_filter.Update()
+    slicer.modules.segmentations.logic().ImportLabelmapToSegmentationNode(labelmapVolumeNode, segmentationNode,
+                                                                          segmentIds)
+
+    # Cleanup temporary nodes
+    slicer.mrmlScene.RemoveNode(labelmapVolumeNode.GetDisplayNode().GetColorNode())
+    slicer.mrmlScene.RemoveNode(labelmapVolumeNode)
+
+    segmentationNode.CreateClosedSurfaceRepresentation()
+    slicer.app.applicationLogic().PropagateVolumeSelection()
+
+
+
+# ----------------------------------------------------
 
 # ----- Saving files -----
 config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config/config.json").replace('\\', '/')
