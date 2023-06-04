@@ -79,7 +79,6 @@ class MainWindow(QMainWindow):
 
         self.window_open = False
 
-
     @staticmethod
     def project_info():
         msg = QMessageBox()
@@ -151,8 +150,14 @@ class MainWindow(QMainWindow):
     def get_output_dir(self):
         return self.output_line_edit.text()
 
-    def get_filter_settings(self):
-        return self.filter_group.checkedButton().text()
+    def get_filter_kernel(self):
+        filter_setting = self.filter_group.checkedButton().text()
+        if filter_setting == "Coarse (fast)":
+            return 7
+        elif filter_setting == "Smooth (slow)":
+            return 11
+        else:
+            return 9
 
     def save_config(self):
         self.config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config/config.json").replace('\\', '/')
@@ -163,7 +168,7 @@ class MainWindow(QMainWindow):
                 "input": self.get_input_dir(),
                 "output": self.get_output_dir()
             },
-            "filter": "Medium",
+            "filter": self.get_filter_kernel(),
             "status": "-"
         }
 
@@ -189,15 +194,15 @@ class MainWindow(QMainWindow):
         output_path = paths.get("output", {})
 
         # Get filter setting
-        filter_setting = paths.get("filter", "Medium")
+        filter_kernel = paths.get("filter", 9)
 
-        return input_path, output_path, filter_setting
+        return input_path, output_path, filter_kernel
 
     def start_algorithm(self):
         if self.get_input_dir() != self.input_init and self.get_output_dir() != self.output_init:
             self.save_config()
 
-            self.algorithm.startAlgorithm(self.get_input_dir(), self.get_output_dir(), self.get_filter_settings())
+            self.algorithm.startAlgorithm(self.get_input_dir(), self.get_output_dir(), self.get_filter_kernel())
             self.thread_status = threading.Thread(target=self.check_status)
             self.thread_status.start()
 
