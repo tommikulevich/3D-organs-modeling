@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>362</width>
+    <width>500</width>
     <height>600</height>
    </rect>
   </property>
@@ -83,6 +83,46 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLabel" name="medianLabel">
+            <property name="text">
+             <string>Median filter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="coarseRadioButton">
+            <property name="text">
+             <string>Coarse (fast)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="mediumRadioButton">
+            <property name="text">
+             <string>Medium</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="smoothRadioButton">
+            <property name="text">
+             <string>Smooth (slow)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="startButton">
          <property name="text">
           <string>Start algorithm</string>
@@ -144,7 +184,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>362</width>
+     <width>500</width>
      <height>22</height>
     </rect>
    </property>
