@@ -1,0 +1,22 @@
+arch amd64
+archivename 31317-win-amd64-SlicerVMTK-gitf03aa88-2022-11-27.zip
+category Vascular Modeling Toolkit
+contributors Daniel Haehn (Boston Childrens Hospital), Luca Antiga (Orobix), Steve Pieper (Isomics), Jean-Christophe Fillion-Robin (Kitware)
+copyOfItem 637f74d6517443dc5dc72568
+depends NA
+description Vascular Modeling Toolkit for vessel tree segmentation and centerline extraction.
+enabled false
+extension_id 637f8572517443dc5dc7430e
+homepage https://github.com/vmtk/SlicerExtension-VMTK
+iconurl http://www.nitrc.org/project/screenshot.php?group_id=196&screenshot_id=269
+installed true
+md5 
+os win
+release 
+revision f03aa88
+scm git
+scmurl https://github.com/vmtk/SlicerExtension-VMTK
+screenshots http://www.nitrc.org/project/screenshot.php?group_id=196&screenshot_id=126 http://www.nitrc.org/project/screenshot.php?group_id=196&screenshot_id=227 http://www.nitrc.org/project/screenshot.php?group_id=196&screenshot_id=228 http://www.nitrc.org/project/screenshot.php?group_id=196&screenshot_id=229
+slicer_revision 31317
+status 
+updated 2022-11-28T12:28:02.127000+00:00

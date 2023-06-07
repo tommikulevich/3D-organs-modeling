@@ -1,0 +1,22 @@
+arch amd64
+archivename 31317-win-amd64-MONAILabel-git46a0dbe-2022-12-16.zip
+category Active Learning
+contributors NVIDIA, KCL
+copyOfItem 637f6d46517443dc5dc71cbe
+depends NA
+description This is Active Learning solution developed under project MONAILabel
+enabled true
+extension_id 637f856f517443dc5dc7405c
+homepage https://github.com/Project-MONAI/MONAILabel/tree/main/plugins/slicer/MONAILabel
+iconurl https://github.com/Project-MONAI/MONAILabel/raw/main/plugins/slicer/MONAILabel/Resources/Icons/MONAILabel.png
+installed true
+md5 
+os win
+release 
+revision a2953b6
+scm git
+scmurl https://github.com/Project-MONAI/MONAILabel.git
+screenshots https://github.com/Project-MONAI/MONAILabel/raw/main/plugins/slicer/MONAILabel/Screenshots/1.png https://github.com/Project-MONAI/MONAILabel/raw/main/plugins/slicer/MONAILabel/Screenshots/2.png
+slicer_revision 31317
+status 
+updated 2022-12-06T11:51:31.866000+00:00

@@ -1,0 +1,68 @@
+{
+  "name" : "BinaryClosingByReconstructionImageFilter",
+  "template_code_filename" : "KernelImageFilter",
+  "template_test_filename" : "ImageFilter",
+  "number_of_inputs" : 1,
+  "doc" : "",
+  "pixel_types" : "IntegerPixelIDTypeList",
+  "no_output_type" : 1,
+  "members" : [
+    {
+      "name" : "ForegroundValue",
+      "type" : "double",
+      "default" : "1.0",
+      "pixeltype" : "Input",
+      "briefdescriptionSet" : "",
+      "detaileddescriptionSet" : "Set the value in the image to consider as \"foreground\". Defaults to maximum value of InputPixelType.",
+      "briefdescriptionGet" : "",
+      "detaileddescriptionGet" : "Get the value in the image considered as \"foreground\". Defaults to maximum value of InputPixelType."
+    },
+    {
+      "name" : "FullyConnected",
+      "type" : "bool",
+      "default" : "false",
+      "doc" : "",
+      "briefdescriptionSet" : "",
+      "detaileddescriptionSet" : "Set/Get whether the connected components are defined strictly by face connectivity or by face+edge+vertex connectivity. Default is FullyConnectedOff. For objects that are 1 pixel wide, use FullyConnectedOn.",
+      "briefdescriptionGet" : "",
+      "detaileddescriptionGet" : "Set/Get whether the connected components are defined strictly by face connectivity or by face+edge+vertex connectivity. Default is FullyConnectedOff. For objects that are 1 pixel wide, use FullyConnectedOn."
+    }
+  ],
+  "custom_methods" : [],
+  "tests" : [
+    {
+      "tag" : "BinaryClosingByReconstruction",
+      "description" : "Test binary closing by reconstruction",
+      "md5hash" : "02dc78be92850eff775783073dbdd47d",
+      "settings" : [
+        {
+          "parameter" : "KernelRadius",
+          "no_get_method" : 1,
+          "value" : 10
+        },
+        {
+          "parameter" : "KernelType",
+          "value" : "itk::simple::sitkBall",
+          "lua_value" : "SimpleITK.sitkBall",
+          "python_value" : "SimpleITK.sitkBall",
+          "ruby_value" : "Simpleitk::SitkBall",
+          "java_value" : "KernelEnum.sitkBall",
+          "tcl_value" : "$$sitkBall",
+          "csharp_value" : "KernelEnum.sitkBall",
+          "R_value" : "'sitkBall'"
+        },
+        {
+          "parameter" : "ForegroundValue",
+          "value" : "200"
+        }
+      ],
+      "inputs" : [
+        "Input/2th_cthead1.png"
+      ]
+    }
+  ],
+  "briefdescription" : "binary closing by reconstruction of an image.",
+  "detaileddescription" : "This filter removes small (i.e., smaller than the structuring element) holes in the image. It is defined as: Closing(f) = ReconstructionByErosion(Dilation(f)).\n\nThe structuring element is assumed to be composed of binary values (zero or one). Only elements of the structuring element having values > 0 are candidates for affecting the center pixel.\n\n\\author Gaetan Lehmann. Biologie du Developpement et de la Reproduction, INRA de Jouy-en-Josas, France.\n\nThis implementation was taken from the Insight Journal paper: https://hdl.handle.net/1926/584 or http://www.insight-journal.org/browse/publication/176 \n\n\\see MorphologyImageFilter , ClosingByReconstructionImageFilter , BinaryOpeningByReconstructionImageFilter",
+  "itk_module" : "ITKBinaryMathematicalMorphology",
+  "itk_group" : "BinaryMathematicalMorphology"
+}

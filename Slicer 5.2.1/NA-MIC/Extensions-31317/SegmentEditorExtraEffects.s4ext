@@ -1,0 +1,22 @@
+arch amd64
+archivename 31317-win-amd64-SegmentEditorExtraEffects-gita7785dd-2022-09-18.zip
+category Segmentation
+contributors Andras Lasso (PerkLab, Queen's), Kyle MacNeil (Med-i Lab, Queen's; SPL, BWH), Andrey Fedorov (SPL, BWH)
+copyOfItem 637f717c517443dc5dc721b3
+depends MarkupsToModel
+description Experimental effects for Segment Editor
+enabled true
+extension_id 637f8571517443dc5dc741c9
+homepage https://github.com/lassoan/SlicerSegmentEditorExtraEffects
+iconurl https://raw.githubusercontent.com/lassoan/SlicerSegmentEditorExtraEffects/master/SegmentEditorExtraEffects.png
+installed true
+md5 
+os win
+release 
+revision a7785dd
+scm git
+scmurl https://github.com/lassoan/SlicerSegmentEditorExtraEffects
+screenshots https://raw.githubusercontent.com/lassoan/SlicerSegmentEditorExtraEffects/master/FastMarchingInput.png https://raw.githubusercontent.com/lassoan/SlicerSegmentEditorExtraEffects/master/FastMarchingOutput.png https://raw.githubusercontent.com/lassoan/SlicerSegmentEditorExtraEffects/master/WatershedOutput.png
+slicer_revision 31317
+status 
+updated 2022-11-24T14:53:37.548000+00:00

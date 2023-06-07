@@ -1,0 +1,73 @@
+{
+  "name" : "MinimumMaximumImageFilter",
+  "template_code_filename" : "ImageFilter",
+  "template_test_filename" : "ImageFilter",
+  "number_of_inputs" : 1,
+  "pixel_types" : "BasicPixelIDTypeList",
+  "filter_type" : "itk::MinimumMaximumImageFilter<InputImageType>",
+  "no_procedure" : true,
+  "no_return_image" : true,
+  "members" : [],
+  "measurements" : [
+    {
+      "name" : "Minimum",
+      "type" : "double",
+      "default" : 0.0,
+      "briefdescriptionGet" : "",
+      "detaileddescriptionGet" : "Return the computed Minimum."
+    },
+    {
+      "name" : "Maximum",
+      "type" : "double",
+      "default" : 0.0,
+      "briefdescriptionGet" : "",
+      "detaileddescriptionGet" : "Return the computed Maximum."
+    }
+  ],
+  "tests" : [
+    {
+      "tag" : "2d",
+      "description" : "2d with unsigned char",
+      "settings" : [],
+      "measurements_results" : [
+        {
+          "name" : "Minimum",
+          "value" : 0,
+          "tolerance" : 0
+        },
+        {
+          "name" : "Maximum",
+          "value" : 255,
+          "tolerance" : 0
+        }
+      ],
+      "inputs" : [
+        "Input/cthead1.png"
+      ]
+    },
+    {
+      "tag" : "float",
+      "description" : "3d float image",
+      "settings" : [],
+      "measurements_results" : [
+        {
+          "name" : "Minimum",
+          "value" : -1146,
+          "tolerance" : 0
+        },
+        {
+          "name" : "Maximum",
+          "value" : 32767,
+          "tolerance" : 0
+        }
+      ],
+      "inputs" : [
+        "Input/RA-Float.nrrd"
+      ]
+    }
+  ],
+  "briefdescription" : "Computes the minimum and the maximum intensity values of an image.",
+  "detaileddescription" : "It is templated over input image type only. This filter just copies the input image through this output to be included within the pipeline. The implementation uses the StatisticsImageFilter .\n\n\\see StatisticsImageFilter",
+  "itk_module" : "ITKImageStatistics",
+  "itk_group" : "ImageStatistics"
+}

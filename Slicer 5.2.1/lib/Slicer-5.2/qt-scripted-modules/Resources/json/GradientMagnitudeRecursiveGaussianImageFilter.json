@@ -1,0 +1,46 @@
+{
+  "name" : "GradientMagnitudeRecursiveGaussianImageFilter",
+  "template_code_filename" : "ImageFilter",
+  "template_test_filename" : "ImageFilter",
+  "doc" : "",
+  "number_of_inputs" : 1,
+  "pixel_types" : "BasicPixelIDTypeList",
+  "output_pixel_type" : "float",
+  "members" : [
+    {
+      "name" : "Sigma",
+      "type" : "double",
+      "default" : "1.0",
+      "doc" : "",
+      "briefdescriptionSet" : "",
+      "detaileddescriptionSet" : "Set Sigma value. Sigma is measured in the units of image spacing.",
+      "briefdescriptionGet" : "",
+      "detaileddescriptionGet" : "Set Sigma value. Sigma is measured in the units of image spacing."
+    },
+    {
+      "name" : "NormalizeAcrossScale",
+      "type" : "bool",
+      "default" : "false",
+      "doc" : "",
+      "briefdescriptionSet" : "",
+      "detaileddescriptionSet" : "Define which normalization factor will be used for the Gaussian \\see RecursiveGaussianImageFilter::SetNormalizeAcrossScale",
+      "briefdescriptionGet" : "",
+      "detaileddescriptionGet" : "Define which normalization factor will be used for the Gaussian \\see RecursiveGaussianImageFilter::SetNormalizeAcrossScale"
+    }
+  ],
+  "tests" : [
+    {
+      "tag" : "default",
+      "description" : "Simply run with default settings",
+      "settings" : [],
+      "tolerance" : 0.0001,
+      "inputs" : [
+        "Input/RA-Float.nrrd"
+      ]
+    }
+  ],
+  "briefdescription" : "Computes the Magnitude of the Gradient of an image by convolution with the first derivative of a Gaussian.",
+  "detaileddescription" : "This filter is implemented using the recursive gaussian filters\n\n\\par Wiki Examples:\n\n\\li All Examples \n\n\\li Find the gradient magnitude of the image first smoothed with a Gaussian kernel",
+  "itk_module" : "ITKImageGradient",
+  "itk_group" : "ImageGradient"
+}
