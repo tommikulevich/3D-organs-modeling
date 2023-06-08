@@ -1,7 +1,8 @@
 {
     "paths": {
-        "input": "Q:/PG/Coding/Projekt Grupowy/MSN/demo/input",
-        "output": "Q:/PG/Coding/Projekt Grupowy/MSN/demo/output"
+        "input": "Q:/PG/Coding/Projekt Grupowy/3D-organs-modeling/demo/input",
+        "output": "Q:/PG/Coding/Projekt Grupowy/3D-organs-modeling/demo/output"
     },
+    "filter": 9,
     "status": "-"
 }
