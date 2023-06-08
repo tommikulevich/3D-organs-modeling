@@ -1,3 +1,0 @@
-from .DICOMRequestHandler import DICOMRequestHandler
-from .SlicerRequestHandler import SlicerRequestHandler
-from .StaticPagesRequestHandler import StaticPagesRequestHandler
