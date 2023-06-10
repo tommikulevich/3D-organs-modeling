@@ -1,5 +1,5 @@
-dicomDataDir= "C:/Users/Misio/PycharmProjects/MONAIv2/20190514_HipLarge_Angio CT/Hip Large (1024x1024x834)"
-outputFolder= "D:/stl_testy_slicer/Nowy folder (8)"
+dicomDataDir= ""
+outputFolder= ""
 
 loadedNodeIDs = []
 from DICOMLib import DICOMUtils
